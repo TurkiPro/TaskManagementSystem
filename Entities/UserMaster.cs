@@ -1,6 +1,6 @@
 ﻿namespace TaskManagementSystem.Entities
 {
-    public class UserMaster
+    public partial class UserMaster
     {
         public UserMaster() 
         { 
