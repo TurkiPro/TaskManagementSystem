@@ -8,11 +8,11 @@ To deploy the project please follow these steps:<br>
 2- Change the connection string in the appsettings.json file by adjusting the username and password.<be>
 
 3- You need to install the following dependencies: <br>
-####   MicrosoftAspNetCore.AuthenticationJwtBearer (7.0.13)<br>
-####   Microsoft.AspNetCore.OpenApi (7.0.13)<br>
-####   Pomelo.EntityFrameworkCore.MySql (70.0<br>
-####   Swashbuckle.AspNetCore (6.5.0)<br>
-####   System.ldentityModel.TokensJwt (70.3)<br>
+   MicrosoftAspNetCore.AuthenticationJwtBearer (7.0.13)<br>
+   Microsoft.AspNetCore.OpenApi (7.0.13)<br>
+   Pomelo.EntityFrameworkCore.MySql (70.0<br>
+   Swashbuckle.AspNetCore (6.5.0)<br>
+   System.ldentityModel.TokensJwt (70.3)<br>
 
 4- Open the project in Visual Studio 2022 then run the project to see the Swagger documentation.<br>
 
