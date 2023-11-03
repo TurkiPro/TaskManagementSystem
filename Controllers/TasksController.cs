@@ -9,7 +9,7 @@ namespace TaskManagementSystem.Controllers
 {
     [Route("api/controller")]
     [ApiController]
-    public class TasksController : Controller
+    public class TasksController : BaseApiController
     {
         #region Variables
         private readonly ITaskService taskService;
@@ -91,6 +91,25 @@ namespace TaskManagementSystem.Controllers
             return Ok(taskResponse);
         }
 
+        ///<summary>
+        ///This method gets all the tasks for a logged in user
+        ///</summary>
+        ///<return></return>
+        [HttpGet]
+        [Route(nameof(GetAllTasks))]
+        public async Task<IActionResult> GetAllTasks()
+        {
+            var getTasksResponse = await taskService.GetTasks(UserID);
+
+            if (!getTasksResponse.Success)
+            {
+                return UnprocessableEntity(getTasksResponse);
+            }
+
+            var tasksResponse = getTasksResponse.Tasks.ConvertAll(o => new TaskResponse { Id = o.Id, Name = o.Name, Description = o.Description, DueDate = Convert.ToString(o.DueDate.ToString("dd/MM/yyyy")), Status = ((TaskStatusEnum)o.Status).ToString() });
+
+            return Ok(tasksResponse);
+        }
         #endregion
     }
 }
