@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace TaskManagementSystem.Controllers
 {
-    public class BaseApiController : Controller
+    public class BaseApiController : ControllerBase
     {
         /// <summary>
         /// Get login user primary Id

@@ -47,7 +47,8 @@ namespace TaskManagementSystem.Controllers
 
             if (!DateTime.TryParse(taskRequest.DueDate, out DateTime dueDate))
             {
-                return BadRequest(new TaskResponse { 
+                return BadRequest(new TaskResponse 
+                { 
                     Success = false, 
                     ErrorCode = "D01", 
                     Error = "Due date is not valid, please enter in the date forma (dd/mm/yyyy" 
@@ -55,15 +56,16 @@ namespace TaskManagementSystem.Controllers
             }
             if (taskRequest.Status > 3)
             {
-                return BadRequest(new TaskResponse { 
+                return BadRequest(new TaskResponse 
+                { 
                     Success = false, 
                     ErrorCode = "D01", 
                     Error = "Invalid status" 
                 });
             }
 
-            int UserID = 0;
-            var task = new Tasks { 
+            var task = new Tasks 
+            { 
                 Id = taskRequest.Id, 
                 Name = taskRequest.Name, 
                 Description = taskRequest.Description, 
@@ -80,7 +82,8 @@ namespace TaskManagementSystem.Controllers
                 return UnprocessableEntity(createTaskResponse);
             }
 
-            var taskResponse = new TaskResponse { 
+            var taskResponse = new TaskResponse 
+            { 
                 Id = createTaskResponse.Task.Id, 
                 Name = createTaskResponse.Task.Name, 
                 Description = createTaskResponse.Task.Description, 
@@ -106,9 +109,148 @@ namespace TaskManagementSystem.Controllers
                 return UnprocessableEntity(getTasksResponse);
             }
 
-            var tasksResponse = getTasksResponse.Tasks.ConvertAll(o => new TaskResponse { Id = o.Id, Name = o.Name, Description = o.Description, DueDate = Convert.ToString(o.DueDate.ToString("dd/MM/yyyy")), Status = ((TaskStatusEnum)o.Status).ToString() });
+            var tasksResponse = getTasksResponse.Tasks.ConvertAll(o => new TaskResponse 
+            { 
+                Id = o.Id, 
+                Name = o.Name, 
+                Description = o.Description, 
+                DueDate = Convert.ToString(o.DueDate.ToString("dd/MM/yyyy")), 
+                Status = ((TaskStatusEnum)o.Status).ToString() 
+            });
 
             return Ok(tasksResponse);
+        }
+
+        /// <summary>
+        /// This method is used to get task details by task id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetTaskById/{taskId}")]
+        public async Task<IActionResult> GetTaskById(int taskId)
+        {
+            if (taskId == 0)
+            {
+                return BadRequest(new DeleteTaskResponse 
+                { 
+                    Success = false, 
+                    ErrorCode = "D01", 
+                    Error = "Invalid Task id" 
+                });
+            }
+            var getTasksResponse = await taskService.GetTaskById(taskId, UserID);
+
+            if (!getTasksResponse.Success)
+            {
+                return UnprocessableEntity(getTasksResponse);
+            }
+
+            var tasksResponse = new TaskResponse 
+            { 
+                Id = getTasksResponse.Task.Id, 
+                Name = getTasksResponse.Task.Name, 
+                Description = getTasksResponse.Task.Description, 
+                DueDate = Convert.ToString(getTasksResponse.Task.DueDate.ToString("dd/MM/yyyy")), 
+                Status = ((TaskStatusEnum)getTasksResponse.Task.Status).ToString() 
+            };
+
+            return Ok(tasksResponse);
+        }
+
+        /// <summary>
+        /// This method is used to delete task
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest(new DeleteTaskResponse 
+                { 
+                    Success = false, 
+                    ErrorCode = "D01", 
+                    Error = "Invalid Task id" 
+                });
+            }
+            var deleteTaskResponse = await taskService.DeleteTask(id, UserID);
+            if (!deleteTaskResponse.Success)
+            {
+                return UnprocessableEntity(deleteTaskResponse);
+            }
+
+            return Ok(deleteTaskResponse.TaskId);
+        }
+
+        /// <summary>
+        /// This method used for update task detail
+        /// </summary>
+        /// <param name="taskRequest"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<IActionResult> Put(TaskRequest taskRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(x => x.Errors.Select(c => c.ErrorMessage)).ToList();
+                if (errors.Any())
+                {
+                    return BadRequest(new TaskResponse
+                    {
+                        Error = $"{string.Join(",", errors)}",
+                        ErrorCode = "S01"
+                    });
+                }
+            }
+
+            if (!DateTime.TryParse(taskRequest.DueDate, out DateTime dueDate))
+            {
+                return BadRequest(new TaskResponse 
+                { 
+                    Success = false, 
+                    ErrorCode = "D01", 
+                    Error = "Invalid due date, Please enter valid date format (dd/MM/yyyy)" 
+                });
+            }
+            if (taskRequest.Status > 3)
+            {
+                return BadRequest(new TaskResponse 
+                { 
+                    Success = false, 
+                    ErrorCode = "D01", 
+                    Error = "Invalid status" 
+                });
+            }
+
+            var task = new Tasks 
+            { 
+                Id = taskRequest.Id, 
+                Name = taskRequest.Name, 
+                Description = taskRequest.Description, 
+                CreatedAt = DateTime.Now, 
+                DueDate = dueDate, 
+                Status = taskRequest.Status, 
+                UserMasterId = UserID 
+            };
+
+            var saveTaskResponse = await taskService.CreateTask(task);
+
+            if (!saveTaskResponse.Success)
+            {
+                return UnprocessableEntity(saveTaskResponse);
+            }
+
+            var taskResponse = new TaskResponse 
+            { 
+                Id = saveTaskResponse.Task.Id, 
+                Name = saveTaskResponse.Task.Name, 
+                Description = saveTaskResponse.Task.Description, 
+                DueDate = Convert.ToString(saveTaskResponse.Task.DueDate.ToString("dd/MM/yyyy")), 
+                Status = ((TaskStatusEnum)saveTaskResponse.Task.Status).ToString() 
+            };
+
+            return Ok(taskResponse);
         }
         #endregion
     }
