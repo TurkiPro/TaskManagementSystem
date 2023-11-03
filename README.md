@@ -12,7 +12,7 @@ To deploy the project please follow these steps:<br>
    Microsoft.AspNetCore.OpenApi (7.0.13)<br>
    Pomelo.EntityFrameworkCore.MySql (7.0.0)<br>
    Swashbuckle.AspNetCore (6.5.0)<br>
-   System.ldentityModel.TokensJwt (70.3)<br>
+   System.ldentityModel.TokensJwt (7.0.3)<br>
 
 4- Open the project in Visual Studio 2022 then run the project to see the Swagger documentation.<br>
 
