@@ -10,7 +10,7 @@ To deploy the project please follow these steps:<br>
 3- You need to install the following dependencies: <br>
    MicrosoftAspNetCore.AuthenticationJwtBearer (7.0.13)<br>
    Microsoft.AspNetCore.OpenApi (7.0.13)<br>
-   Pomelo.EntityFrameworkCore.MySql (70.0<br>
+   Pomelo.EntityFrameworkCore.MySql (7.0.0)<br>
    Swashbuckle.AspNetCore (6.5.0)<br>
    System.ldentityModel.TokensJwt (70.3)<br>
 
